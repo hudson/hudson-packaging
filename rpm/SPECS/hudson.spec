@@ -117,8 +117,8 @@ exit 0
 %attr(0755,hudson,hudson) %dir %{workdir}
 %attr(0750,hudson,hudson) /var/log/hudson
 %config /etc/logrotate.d/%{name}
-%config /etc/init.d/%{name}
-%config /etc/sysconfig/%{name}
+%config(noreplace) /etc/init.d/%{name}
+%config(noreplace) /etc/sysconfig/%{name}
 /etc/yum.repos.d/hudson.repo
 /usr/sbin/rc%{name}
 
