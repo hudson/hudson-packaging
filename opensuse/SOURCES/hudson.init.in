@@ -91,80 +91,58 @@ fi
 
 case "$1" in
     start)
-	echo -n "Starting Hudson "
-	if /sbin/startproc -l /var/log/hudson.rc -u "$HUDSON_USER" -p "$HUDSON_PID_FILE" $JAVA_CMD $PARAMS; then
-	    rc_status
-	    # get own session ID
-	    MY_SESSION_ID=`/bin/ps h -o sess -p $$`
-	    # get PID
-	    /bin/ps hww -u hudson -o sess,pid,cmd | \
-		while read sess pid cmd; do [ "$sess" = "$MY_SESSION_ID" -a "$cmd" = "$JAVA_CMD $PARAMS" ] && echo $pid; done | \
-		head -1 > "$HUDSON_PID_FILE"
-	else
-	    rc_failed 1
-	fi
-	rc_status -v
-	;;
+	   echo -n "Starting Hudson "
+	   JPID=`/sbin/startproc -v -s -l /var/log/hudson.rc -u "$HUDSON_USER" -p "$HUDSON_PID_FILE" $JAVA_CMD $PARAMS`
+	   rc_status -v
+	   [ -s "$HUDSON_PID_FILE" ] || echo $JPID >"$HUDSON_PID_FILE"
+	   ;;
     stop)
-	echo -n "Shutting down Hudson "
-	PID=`cat "$HUDSON_PID_FILE" 2>/dev/null`
-	if [ -n "$PID" ]; then
-	    if /bin/kill -0 "$PID"; then
-		# process exists
-		/bin/kill -INT "$PID"
-		rc=$?
-		[ "$rc" = "0" ] && /bin/rm -f "$HUDSON_PID_FILE"
-		rc_failed "$rc"
-	    else
-		rc_failed 7
-	    fi
-	else
-	    rc_failed 1
-	fi
-	rc_status -v
-	;;
+	   echo -n "Shutting down Hudson "
+	   /sbin/killproc -p "$HUDSON_PID_FILE" $JAVA_HOME/bin/java
+	   rc_status -v
+	   ;;
     try-restart|condrestart)
-	if test "$1" = "condrestart"; then
-		echo "${attn} Use try-restart ${done}(LSB)${attn} rather than condrestart ${warn}(RH)${norm}"
-	fi
-	$0 status
-	if test $? = 0; then
-		$0 restart
-	else
-		rc_reset	# Not running is not a failure.
-	fi
-	rc_status
-	;;
+	   if test "$1" = "condrestart"; then
+		  echo "${attn} Use try-restart ${done}(LSB)${attn} rather than condrestart ${warn}(RH)${norm}"
+	   fi
+	   $0 status
+	   if test $? = 0; then
+		   $0 restart
+	   else
+		  rc_reset	# Not running is not a failure.
+	   fi
+	   rc_status
+	   ;;
     restart)
-	$0 stop
-	sleep 5
-	$0 start
-	rc_status
-	;;
+	   $0 stop
+	   sleep 5
+	   $0 start
+	   rc_status
+	   ;;
     force-reload)
-	echo -n "Reload service Hudson "
-	$0 try-restart
-	rc_status
-	;;
+	   echo -n "Reload service Hudson "
+	   $0 try-restart
+	   rc_status
+	   ;;
     reload)
-	rc_failed 3
-	rc_status -v
-	;;
+	   rc_failed 3
+	   rc_status -v
+	   ;;
     status)
-	echo -n "Checking for service Hudson "
-	/sbin/checkproc -p "$HUDSON_PID_FILE" "$JAVA_HOME/bin/java"
-	rc_status -v
-	;;
+	   echo -n "Checking for service Hudson "
+	   /sbin/checkproc -p "$HUDSON_PID_FILE" "$JAVA_HOME/bin/java"
+	   rc_status -v
+	   ;;
     probe)
-	## Optional: Probe for the necessity of a reload, print out the
-	## argument to this init script which is required for a reload.
-	## Note: probe is not (yet) part of LSB (as of 1.9)
+	   ## Optional: Probe for the necessity of a reload, print out the
+	   ## argument to this init script which is required for a reload.
+	   ## Note: probe is not (yet) part of LSB (as of 1.9)
 
-	test "$HUDSON_CONFIG" -nt "$HUDSON_PID_FILE" && echo reload
-	;;
+	   test "$HUDSON_CONFIG" -nt "$HUDSON_PID_FILE" && echo reload
+	   ;;
     *)
-	echo "Usage: $0 {start|stop|status|try-restart|restart|force-reload|reload|probe}"
-	exit 1
-	;;
+	   echo "Usage: $0 {start|stop|status|try-restart|restart|force-reload|reload|probe}"
+	   exit 1
+	   ;;
 esac
 rc_exit

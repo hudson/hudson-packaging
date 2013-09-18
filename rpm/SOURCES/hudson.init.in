@@ -91,7 +91,7 @@ RETVAL=0
 case "$1" in
     start)
 	echo -n "Starting Hudson "
-	daemon --user "$HUDSON_USER" --pidfile "$HUDSON_PID_FILE" $JAVA_CMD $PARAMS > /dev/null
+	daemon  --user "$HUDSON_USER" --pidfile "$HUDSON_PID_FILE" "$JAVA_CMD" "$PARAMS" &> /var/tmp/hudson.log &
 	RETVAL=$?
 	if [ $RETVAL = 0 ]; then
 	    success
