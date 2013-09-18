@@ -1,3 +1,10 @@
+hudson (3.1.0) unstable; urgency=low
+
+  * See http://www.eclipse.org/hudson/changelog.php for more details.
+
+ -- Eclipse Hudson Community <hudson-dev@eclipse.org>  Wed, 18 Sep 2013 23:33:06 -0800
+
+
 hudson (3.0.1) unstable; urgency=low
 
   * See http://hudson-ci.org/changelog.html for more details.
