@@ -33,3 +33,10 @@ hudson_*.build
 hudson_*.changes
 =======
 push-build.sh
+*.deb
+repositories/debian/db
+repositories/debian/dists
+repositories/opensuse/repodata
+repositories/redhat/repodata
+opensuse/BUILDROOT
+opensuse/tmp

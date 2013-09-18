@@ -1,0 +1,8 @@
+Origin: hudson
+Label: Hudson-Core
+Suite: stable
+Codename: hudson
+Version: 3.0.1
+Architectures: noarch
+Components: core
+Description: Continuos Integration Server written in Java

@@ -1,0 +1,4 @@
+[hudson]
+name=Hudson
+baseurl=http://hudson-ci.org/opensuse/
+gpgcheck=0
